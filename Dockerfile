@@ -1,12 +1,12 @@
 FROM node:latest
 
-RUN mkdir /naivechain
-ADD package.json /naivechain/
-ADD main.js /naivechain/
+RUN mkdir /vanillachain
+ADD package.json /vanillachain/
+ADD main.js /vanillachain/
 
-RUN cd /naivechain && npm install
+RUN cd /vanillachain && npm install
 
 EXPOSE 3001
 EXPOSE 6001
 
-ENTRYPOINT cd /naivechain && npm install && PEERS=$PEERS npm start
+ENTRYPOINT cd /vanillachain && npm install && PEERS=$PEERS npm start
