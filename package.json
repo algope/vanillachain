@@ -1,16 +1,22 @@
 {
-  "name": "naivechain",
-  "version": "1.0.0",
-  "description": "",
+  "name": "vanillachain",
+  "version": "0.0.1",
+  "description": "A tiny blockchain implementation. Based on the great project: https://github.com/lhartikk/naivechain",
   "scripts": {
     "start": "node main.js"
   },
   "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "color-logs": "^0.6.1",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.2",
+    "morgan": "^1.9.0",
     "ws": "^3.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/algope/vanillachain.git"
   },
   "engines": {
     "node": ">=8.9.1"

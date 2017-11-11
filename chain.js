@@ -1,6 +1,6 @@
 'use strict';
 let CryptoJS = require("crypto-js");
-
+let logger = require('color-logs')(true, true, "chain.js");
 
 class Block {
     constructor(index, previousHash, timestamp, data, hash) {
@@ -17,7 +17,6 @@ let MessageType = {
     RESPONSE_BLOCKCHAIN: 2
 };
 
-console.log("HOLIIIIIII");
 let blockchain = [getGenesisBlock()];
 
 
@@ -70,11 +69,11 @@ module.exports.responseLatestMsg = function(){
  */
 module.exports.replaceChain = function(newBlocks, broadcast){
     if (isValidChain(newBlocks) && newBlocks.length > blockchain.length) {
-        console.log('Received blockchain is valid. Replacing current blockchain with received blockchain');
+        logger.info('Received blockchain is valid. Replacing current blockchain with received blockchain');
         blockchain = newBlocks;
         broadcast(this.responseLatestMsg());
     } else {
-        console.log('Received blockchain invalid');
+        logger.info('Received blockchain invalid');
     }
 };
 
@@ -103,14 +102,14 @@ function isValidNewBlock(newBlock, previousBlock) {
      * This is true especially when we receive new blocks from other nodes and must decide whether to accept them or not.
      */
     if (previousBlock.index + 1 !== newBlock.index) {
-        console.log('invalid index');
+        logger.error('invalid index');
         return false;
     } else if (previousBlock.hash !== newBlock.previousHash) {
-        console.log('invalid previoushash');
+        logger.error('invalid previoushash');
         return false;
     } else if (calculateHashForBlock(newBlock) !== newBlock.hash) {
-        console.log(typeof (newBlock.hash) + ' ' + typeof calculateHashForBlock(newBlock));
-        console.log('invalid hash: ' + calculateHashForBlock(newBlock) + ' ' + newBlock.hash);
+        logger.warn(typeof (newBlock.hash) + ' ' + typeof calculateHashForBlock(newBlock));
+        logger.error('invalid hash: ' + calculateHashForBlock(newBlock) + ' ' + newBlock.hash);
         return false;
     }
     return true;
