@@ -4,7 +4,7 @@ Based on the project: https://github.com/lhartikk/naivechain
 Check also [this blog post](https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54#.dttbm9afr5) for a more detailed overview of the key concepts
 
 
-## Key concepts of Naivechain
+## Key concepts
 * HTTP interface to control the node
 * Use Websockets to communicate with other nodes (P2P)
 * Super simple "protocols" in P2P communication

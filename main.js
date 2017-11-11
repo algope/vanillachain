@@ -46,6 +46,7 @@ let initHttpServer = () => {
         connectToPeers([req.body.peer]);
         res.send();
     });
+
     app.listen(http_port, () => logger.info('HTTP on port: ' + http_port));
 };
 
