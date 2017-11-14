@@ -33,7 +33,7 @@ let initHttpServer = () => {
         chain.addBlock(newBlock);
         broadcast(chain.responseLatestMsg());
         logger.colors("cyan").info('Block added: \n' + JSON.stringify(newBlock , null, 4));
-        res.send({"stat":"Block added"});
+        res.send({"status":"Block added"});
     });
 
     //List peers
@@ -115,6 +115,7 @@ let handleBlockchainResponse = (message) => {
         if (latestBlockHeld.hash === latestBlockReceived.previousHash) {
             logger.info("We can append the received block to our chain");
             chain.blockchain().push(latestBlockReceived);
+            logger.info("I'm a node and my chain is: " + JSON.stringify(chain.blockchain(), null, 4));
             broadcast(chain.responseLatestMsg());
         } else if (receivedBlocks.length === 1) {
             logger.warning("We have to query the chain from our peer");
