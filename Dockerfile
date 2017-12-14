@@ -3,6 +3,7 @@ FROM node:latest
 RUN mkdir /vanillachain
 ADD package.json /vanillachain/
 ADD main.js /vanillachain/
+ADD chain.js /vanillachain/
 
 RUN cd /vanillachain && npm install
 

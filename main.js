@@ -3,6 +3,7 @@ let bodyParser = require('body-parser');
 let WebSocket = require("ws");
 let chain = require("./chain.js");
 let logger = require('color-logs')(true, true, "main.js");
+let basicAuth = require('express-basic-auth');
 
 let http_port = process.env.HTTP_PORT || 3001;
 let p2p_port = process.env.P2P_PORT || 6001;
@@ -19,10 +20,14 @@ let write = (ws, message) => ws.send(JSON.stringify(message));
 let broadcast = (message) => sockets.forEach(socket => write(socket, message));
 
 
-
 let initHttpServer = () => {
     let app = express();
     app.use(bodyParser.json());
+    let admin = process.env.ADMIN_USER;
+    let pass = process.env.ADMIN_PASS;
+    app.use(basicAuth({
+        users: { 'admin': pass }
+    }));
 
     //List all blocks
     app.get('/blocks', (req, res) => res.send(JSON.stringify(chain.blockchain())));
@@ -32,8 +37,8 @@ let initHttpServer = () => {
         let newBlock = chain.generateNextBlock(req.body.data);
         chain.addBlock(newBlock);
         broadcast(chain.responseLatestMsg());
-        logger.colors("cyan").info('Block added: \n' + JSON.stringify(newBlock , null, 4));
-        res.send({"status":"Block added"});
+        logger.colors("cyan").info('Block added: \n' + JSON.stringify(newBlock, null, 4));
+        res.send({"status": "Block added"});
     });
 
     //List peers
@@ -68,19 +73,15 @@ let initConnection = (ws) => {
 let initMessageHandler = (ws) => {
     ws.on('message', (data) => {
         let message = JSON.parse(data);
-
         switch (message.type) {
             case MessageType.QUERY_LATEST:
                 write(ws, chain.responseLatestMsg());
-                logger.info('NEW MESSAGE: Query Latest');
                 break;
             case MessageType.QUERY_ALL:
                 write(ws, chain.responseChainMsg());
-                logger.info('NEW MESSAGE: Query All');
                 break;
             case MessageType.RESPONSE_BLOCKCHAIN:
                 handleBlockchainResponse(message);
-                logger.info('NEW MESSAGE: Sync');
                 break;
         }
     });
@@ -94,7 +95,6 @@ let initErrorHandler = (ws) => {
     ws.on('close', () => closeConnection(ws));
     ws.on('error', () => closeConnection(ws));
 };
-
 
 
 let connectToPeers = (newPeers) => {
@@ -113,9 +113,9 @@ let handleBlockchainResponse = (message) => {
     let latestBlockHeld = chain.getLatestBlock();
     if (latestBlockReceived.index > latestBlockHeld.index) {
         if (latestBlockHeld.hash === latestBlockReceived.previousHash) {
-            logger.info("We can append the received block to our chain");
+            logger.info("Appending the received block to chain");
             chain.blockchain().push(latestBlockReceived);
-            logger.info("I'm a node and my chain is: " + JSON.stringify(chain.blockchain(), null, 4));
+            chain.persist(p2p_port, latestBlockReceived);
             broadcast(chain.responseLatestMsg());
         } else if (receivedBlocks.length === 1) {
             logger.warning("We have to query the chain from our peer");

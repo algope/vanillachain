@@ -15,8 +15,8 @@ Check also [this blog post](https://medium.com/@lhartikk/a-blockchain-in-200-lin
 (set up two connected nodes and mine 1 block)
 ```
 npm install
-HTTP_PORT=3001 P2P_PORT=6001 npm start
-HTTP_PORT=3002 P2P_PORT=6002 PEERS=ws://localhost:6001 npm start
+HTTP_PORT=3001 P2P_PORT=6001 ADMIN_PASS=test123 npm start
+HTTP_PORT=3002 P2P_PORT=6002 ADMIN_PASS=test123 PEERS=ws://localhost:6001 npm start
 curl -H "Content-type:application/json" --data '{"data" : "Some data to the first block"}' http://localhost:3001/mineBlock
 ```
 
