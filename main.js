@@ -5,7 +5,7 @@ let chain = require("./chain.js");
 let logger = require('color-logs')(true, true, "main.js");
 let basicAuth = require('express-basic-auth');
 
-let http_port = process.env.HTTP_PORT || 3001;
+let http_port = process.env.PORT || 3001;
 let p2p_port = process.env.P2P_PORT || 6001;
 let initialPeers = process.env.PEERS ? process.env.PEERS.split(',') : [];
 
@@ -23,7 +23,6 @@ let broadcast = (message) => sockets.forEach(socket => write(socket, message));
 let initHttpServer = () => {
     let app = express();
     app.use(bodyParser.json());
-    let admin = process.env.ADMIN_USER;
     let pass = process.env.ADMIN_PASS;
     app.use(basicAuth({
         users: { 'admin': pass }

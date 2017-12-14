@@ -81,7 +81,7 @@ module.exports.replaceChain = function (newBlocks, broadcast) {
 
 module.exports.persist = function (id, block) {
     logger.info("Node " + id + " persisting new block.");
-    //TODO: Persist to redis
+    logger.colors("cyan").info('Block added: \n' + JSON.stringify(block, null, 4));
 };
 
 
